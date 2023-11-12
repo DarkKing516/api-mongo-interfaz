@@ -10,6 +10,7 @@ router.get('/', indexController.getIndex);
 router.get('/usuarios', usuarioController.getAllUsuarios);
 router.get('/usuarios/:id', usuarioController.getOneUsuario);
 router.post('/usuarios', usuarioController.createUsuario);
-router.put('/usuarios/:id', usuarioController.updateUsuario); // Nueva ruta para actualizar un usuario
+router.put('/usuarios/:id', usuarioController.updateUsuario);
+router.delete('/usuarios/:id', usuarioController.deleteOneUsuario); // Nueva ruta para eliminar un usuario
 
 module.exports = router;

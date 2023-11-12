@@ -51,6 +51,20 @@ const usuarioController = {
       console.error('Error al actualizar usuario:', error);
       res.status(500).send('Error interno del servidor');
     }
+  },
+
+  deleteOneUsuario: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const usuario = await Usuario.findByIdAndDelete(id);
+      if (!usuario) {
+        return res.status(404).send('Usuario no encontrado');
+      }
+      res.json({ message: 'Usuario eliminado correctamente' });
+    } catch (error) {
+      console.error('Error al eliminar usuario:', error);
+      res.status(500).send('Error interno del servidor');
+    }
   }
   // Puedes añadir más funciones según tus necesidades
 };
