@@ -2,7 +2,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const cors = require('cors');  // Importa el middleware CORS
 const routes = require('./routes');
 
 const app = express();
@@ -10,9 +9,6 @@ const PORT = 3000;
 
 // Middleware para procesar datos en formato JSON
 app.use(bodyParser.json());
-
-// Middleware CORS
-app.use(cors());
 
 // Conexión a la base de datos en MongoDB Atlas
 mongoose.connect('mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/merndb', {
