@@ -22,6 +22,35 @@ const usuarioController = {
       console.error('Error al crear usuario:', error);
       res.status(500).send('Error interno del servidor');
     }
+  },
+
+  getOneUsuario: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const usuario = await Usuario.findById(id);
+      if (!usuario) {
+        return res.status(404).send('Usuario no encontrado');
+      }
+      res.json(usuario);
+    } catch (error) {
+      console.error('Error al obtener usuario:', error);
+      res.status(500).send('Error interno del servidor');
+    }
+  },
+
+  updateUsuario: async (req, res) => {
+    const { id } = req.params;
+    const { nombre, correo } = req.body;
+    try {
+      const usuario = await Usuario.findByIdAndUpdate(id, { nombre, correo }, { new: true });
+      if (!usuario) {
+        return res.status(404).send('Usuario no encontrado');
+      }
+      res.json(usuario);
+    } catch (error) {
+      console.error('Error al actualizar usuario:', error);
+      res.status(500).send('Error interno del servidor');
+    }
   }
   // Puedes añadir más funciones según tus necesidades
 };
