@@ -13,7 +13,7 @@ export default function App() {
   useEffect(() => {
     const fetchUsuarios = async () => {
       try {
-        const response = await fetch('http://localhost:3000/usuarios');
+        const response = await fetch('http://localhost:3000/pedidos');
         if (!response.ok) {
           throw new Error('No se pudo obtener la lista de usuarios.');
         }
