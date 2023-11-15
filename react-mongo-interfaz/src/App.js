@@ -98,6 +98,31 @@ function App() {
                 onChange={handleEstadoChange}
               />
             </p>
+            {/* Mostrar detalles del servicio */}
+            {selectedPedido.servicios ? (
+              <div>
+                <h3>Detalles del Servicio</h3>
+                <p>Nombre del Servicio: {selectedPedido.servicios.nombre_servicio}</p>
+                <p>Estado del Servicio: {selectedPedido.servicios.estado_servicio}</p>
+                <p>Cantidad del Servicio: {selectedPedido.servicios.cantidad_servicio}</p>
+                <p>Precio del Servicio: {selectedPedido.servicios.precio_servicio}</p>
+                <p>Estado del Catálogo del Servicio: {selectedPedido.servicios.estado_servicio_catalogo}</p>
+                <p>Subtotal del Servicio: {selectedPedido.servicios.subtotal}</p>
+
+                {/* Mostrar detalles del Tipo de Servicio */}
+                {selectedPedido.servicios.tipo_servicio && (
+                  <div>
+                    <h4>Detalles del Tipo de Servicio</h4>
+                    <p>Nombre del Tipo de Servicio: {selectedPedido.servicios.tipo_servicio.nombre_tipo_servicio}</p>
+                    <p>Estado del Tipo de Servicio: {selectedPedido.servicios.tipo_servicio.estado_tipo_servicio}</p>
+                    {/* Otros campos del tipo de servicio */}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <p>No hay detalles de servicio disponibles.</p>
+            )}
+
             <button onClick={handleGuardarCambios}>Guardar Cambios</button>
           </div>
         )}
