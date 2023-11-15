@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Conexión a la base de datos en MongoDB Atlas
-mongoose.connect('mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/merndb', {
+mongoose.connect('mongodb+srv://jhomai7020:1097183614@sena.kpooaa3.mongodb.net/erikas_homemade', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
