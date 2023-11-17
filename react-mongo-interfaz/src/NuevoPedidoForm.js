@@ -141,15 +141,7 @@ const NuevoPedidoForm = ({ onPedidoAgregado }) => {
                 value={nuevoPedido.total_pedido}
                 onChange={handleInputChange}
             />
-
-            <label>Producto - Nombre Tipo:</label>
-            <input
-                type="text"
-                name="productos.tipo_producto.nombre_tipo_producto"
-                value={nuevoPedido.productos.tipo_producto.nombre_tipo_producto}
-                onChange={handleInputChange}
-            />
-
+            <br />
             <button type="submit">Agregar Pedido</button>
         </form>
     );
