@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import Select from 'react-select';
 import axios from 'axios';
+import NuevoPedidoForm from './NuevoPedidoForm'; // Importa el nuevo componente
 import './App.css';
 
-Modal.setAppElement('#root'); // Necesario para evitar errores de accesibilidad con react-modal
+Modal.setAppElement('#root');
 
 function App() {
   const [pedidos, setPedidos] = useState([]);
   const [selectedPedido, setSelectedPedido] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [nuevoPedidoModalIsOpen, setNuevoPedidoModalIsOpen] = useState(false);
 
   // Obtener la lista de pedidos al cargar el componente
   useEffect(() => {
@@ -30,25 +32,38 @@ function App() {
 
   // Manejar el cambio de estado en la modal
   const handleEstadoChange = (selectedOption) => {
-    // Puedes hacer una solicitud API para actualizar el estado aquí
-    // También puedes manejar el cambio localmente y actualizar la API en "Guardar cambios"
-    // Para este ejemplo, simplemente actualizamos el estado localmente
     setSelectedPedido(prevPedido => ({ ...prevPedido, estado_pedido: selectedOption.value }));
   };
 
   // Guardar los cambios en la modal
   const handleGuardarCambios = () => {
-    // Realizar una solicitud API para actualizar el estado en la base de datos
-    // Aquí solo actualizamos el estado localmente
     setPedidos(prevPedidos =>
       prevPedidos.map(pedido => (pedido._id === selectedPedido._id ? selectedPedido : pedido))
     );
     setModalIsOpen(false);
   };
 
+  // Abrir la modal de nuevo pedido
+  const handleNuevoPedidoClick = () => {
+    setNuevoPedidoModalIsOpen(true);
+  };
+
+  // Agregar un nuevo pedido a la lista
+  const handlePedidoAgregado = (nuevoPedido) => {
+    setPedidos(prevPedidos => [...prevPedidos, nuevoPedido]);
+    setNuevoPedidoModalIsOpen(false);
+  };
+
   return (
     <div>
       <h1>Listado de Pedidos</h1>
+
+      {/* Botón para abrir la modal de nuevo pedido */}
+      <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+        <button onClick={handleNuevoPedidoClick}>Agregar Nuevo Pedido</button>
+      </div>
+
+      {/* Lista de pedidos existentes */}
       <table>
         <thead>
           <tr>
@@ -157,6 +172,15 @@ function App() {
             <button onClick={handleGuardarCambios}>Guardar Cambios</button>
           </div>
         )}
+      </Modal>
+
+      {/* Modal de nuevo pedido */}
+      <Modal
+        isOpen={nuevoPedidoModalIsOpen}
+        onRequestClose={() => setNuevoPedidoModalIsOpen(false)}
+        contentLabel="Agregar Nuevo Pedido"
+      >
+        <NuevoPedidoForm onPedidoAgregado={handlePedidoAgregado} />
       </Modal>
     </div>
   );
