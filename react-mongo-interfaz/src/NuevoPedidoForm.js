@@ -1,4 +1,3 @@
-// NuevoPedidoForm.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -8,30 +7,34 @@ const NuevoPedidoForm = ({ onPedidoAgregado }) => {
     fecha_pedido: '',
     total_pedido: 0,
     estado_pedido: 'por hacer',
-    producto: {
-      tipo_producto: {
-        nombre_tipo_producto: '',
-        estado_tipo_producto: '',
+    productos: [
+      {
+        tipo_producto: {
+          nombre_tipo_producto: '',
+          estado_tipo_producto: '',
+        },
+        nombre_producto: '',
+        estado_producto: '',
+        cantidad_producto: 0,
+        precio_producto: 0,
+        estado_producto_catalogo: '',
+        subtotal: 0,
       },
-      nombre_producto: '',
-      estado_producto: '',
-      cantidad_producto: 0,
-      precio_producto: 0,
-      estado_producto_catalogo: '',
-      subtotal: 0,
-    },
-    servicio: {
-      tipo_servicio: {
-        nombre_tipo_servicio: '',
-        estado_tipo_servicio: '',
+    ],
+    servicios: [
+      {
+        tipo_servicio: {
+          nombre_tipo_servicio: '',
+          estado_tipo_servicio: '',
+        },
+        nombre_servicio: '',
+        estado_servicio: '',
+        cantidad_servicio: 0,
+        precio_servicio: 0,
+        estado_servicio_catalogo: '',
+        subtotal: 0,
       },
-      nombre_servicio: '',
-      estado_servicio: '',
-      cantidad_servicio: 0,
-      precio_servicio: 0,
-      estado_servicio_catalogo: '',
-      subtotal: 0,
-    },
+    ],
   });
 
   useEffect(() => {
@@ -53,54 +56,70 @@ const NuevoPedidoForm = ({ onPedidoAgregado }) => {
     }));
   };
 
-  const handleProductoChange = (e) => {
+  const handleProductoChange = (e, index) => {
     const { name, value } = e.target;
-    setNuevoPedido((prevPedido) => ({
-      ...prevPedido,
-      producto: {
-        ...prevPedido.producto,
+    setNuevoPedido((prevPedido) => {
+      const nuevosProductos = [...prevPedido.productos];
+      nuevosProductos[index] = {
+        ...nuevosProductos[index],
         [name]: value,
-      },
-    }));
+      };
+      return {
+        ...prevPedido,
+        productos: nuevosProductos,
+      };
+    });
   };
 
-  const handleServicioChange = (e) => {
+  const handleServicioChange = (e, index) => {
     const { name, value } = e.target;
-    setNuevoPedido((prevPedido) => ({
-      ...prevPedido,
-      servicio: {
-        ...prevPedido.servicio,
+    setNuevoPedido((prevPedido) => {
+      const nuevosServicios = [...prevPedido.servicios];
+      nuevosServicios[index] = {
+        ...nuevosServicios[index],
         [name]: value,
-      },
-    }));
+      };
+      return {
+        ...prevPedido,
+        servicios: nuevosServicios,
+      };
+    });
   };
 
-  const handleTipoProductoChange = (e) => {
+  const handleTipoProductoChange = (e, index) => {
     const { name, value } = e.target;
-    setNuevoPedido((prevPedido) => ({
-      ...prevPedido,
-      producto: {
-        ...prevPedido.producto,
+    setNuevoPedido((prevPedido) => {
+      const nuevosProductos = [...prevPedido.productos];
+      nuevosProductos[index] = {
+        ...nuevosProductos[index],
         tipo_producto: {
-          ...prevPedido.producto.tipo_producto,
+          ...nuevosProductos[index].tipo_producto,
           [name]: value,
         },
-      },
-    }));
+      };
+      return {
+        ...prevPedido,
+        productos: nuevosProductos,
+      };
+    });
   };
 
-  const handleTipoServicioChange = (e) => {
+  const handleTipoServicioChange = (e, index) => {
     const { name, value } = e.target;
-    setNuevoPedido((prevPedido) => ({
-      ...prevPedido,
-      servicio: {
-        ...prevPedido.servicio,
+    setNuevoPedido((prevPedido) => {
+      const nuevosServicios = [...prevPedido.servicios];
+      nuevosServicios[index] = {
+        ...nuevosServicios[index],
         tipo_servicio: {
-          ...prevPedido.servicio.tipo_servicio,
+          ...nuevosServicios[index].tipo_servicio,
           [name]: value,
         },
-      },
-    }));
+      };
+      return {
+        ...prevPedido,
+        servicios: nuevosServicios,
+      };
+    });
   };
 
   const handleCantidadChange = (e) => {
@@ -113,12 +132,60 @@ const NuevoPedidoForm = ({ onPedidoAgregado }) => {
   };
 
   const calcularTotalPedido = () => {
-    const subtotalProductos = nuevoPedido.producto.cantidad_producto * nuevoPedido.producto.precio_producto;
-    const subtotalServicios = nuevoPedido.servicio.cantidad_servicio * nuevoPedido.servicio.precio_servicio;
+    const subtotalProductos = nuevoPedido.productos.reduce(
+      (total, producto) => total + producto.cantidad_producto * producto.precio_producto,
+      0
+    );
+    const subtotalServicios = nuevoPedido.servicios.reduce(
+      (total, servicio) => total + servicio.cantidad_servicio * servicio.precio_servicio,
+      0
+    );
     const totalPedido = subtotalProductos + subtotalServicios;
     setNuevoPedido((prevPedido) => ({
       ...prevPedido,
       total_pedido: totalPedido,
+    }));
+  };
+
+  const agregarProducto = () => {
+    setNuevoPedido((prevPedido) => ({
+      ...prevPedido,
+      productos: [
+        ...prevPedido.productos,
+        {
+          tipo_producto: {
+            nombre_tipo_producto: '',
+            estado_tipo_producto: '',
+          },
+          nombre_producto: '',
+          estado_producto: '',
+          cantidad_producto: 0,
+          precio_producto: 0,
+          estado_producto_catalogo: '',
+          subtotal: 0,
+        },
+      ],
+    }));
+  };
+
+  const agregarServicio = () => {
+    setNuevoPedido((prevPedido) => ({
+      ...prevPedido,
+      servicios: [
+        ...prevPedido.servicios,
+        {
+          tipo_servicio: {
+            nombre_tipo_servicio: '',
+            estado_tipo_servicio: '',
+          },
+          nombre_servicio: '',
+          estado_servicio: '',
+          cantidad_servicio: 0,
+          precio_servicio: 0,
+          estado_servicio_catalogo: '',
+          subtotal: 0,
+        },
+      ],
     }));
   };
 
@@ -132,30 +199,34 @@ const NuevoPedidoForm = ({ onPedidoAgregado }) => {
         fecha_pedido: '',
         total_pedido: 0,
         estado_pedido: 'por hacer',
-        producto: {
-          tipo_producto: {
-            nombre_tipo_producto: '',
-            estado_tipo_producto: '',
+        productos: [
+          {
+            tipo_producto: {
+              nombre_tipo_producto: '',
+              estado_tipo_producto: '',
+            },
+            nombre_producto: '',
+            estado_producto: '',
+            cantidad_producto: 0,
+            precio_producto: 0,
+            estado_producto_catalogo: '',
+            subtotal: 0,
           },
-          nombre_producto: '',
-          estado_producto: '',
-          cantidad_producto: 0,
-          precio_producto: 0,
-          estado_producto_catalogo: '',
-          subtotal: 0,
-        },
-        servicio: {
-          tipo_servicio: {
-            nombre_tipo_servicio: '',
-            estado_tipo_servicio: '',
+        ],
+        servicios: [
+          {
+            tipo_servicio: {
+              nombre_tipo_servicio: '',
+              estado_tipo_servicio: '',
+            },
+            nombre_servicio: '',
+            estado_servicio: '',
+            cantidad_servicio: 0,
+            precio_servicio: 0,
+            estado_servicio_catalogo: '',
+            subtotal: 0,
           },
-          nombre_servicio: '',
-          estado_servicio: '',
-          cantidad_servicio: 0,
-          precio_servicio: 0,
-          estado_servicio_catalogo: '',
-          subtotal: 0,
-        },
+        ],
       });
     } catch (error) {
       console.error('Error al agregar un nuevo pedido:', error);
@@ -200,118 +271,132 @@ const NuevoPedidoForm = ({ onPedidoAgregado }) => {
       />
 
       <h2>Productos</h2>
-      <label>Tipo Producto:</label>
-      <input
-        type="text"
-        name="nombre_tipo_producto"
-        value={nuevoPedido.producto.tipo_producto.nombre_tipo_producto}
-        onChange={handleTipoProductoChange}
-      />
+      {nuevoPedido.productos.map((producto, index) => (
+        <div key={index}>
+          <label>Tipo Producto:</label>
+          <input
+            type="text"
+            name="nombre_tipo_producto"
+            value={producto.tipo_producto.nombre_tipo_producto}
+            onChange={(e) => handleTipoProductoChange(e, index)}
+          />
 
-      <label>Estado Tipo Producto:</label>
-      <input
-        type="text"
-        name="estado_tipo_producto"
-        value={nuevoPedido.producto.tipo_producto.estado_tipo_producto}
-        onChange={handleTipoProductoChange}
-      />
+          <label>Estado Tipo Producto:</label>
+          <input
+            type="text"
+            name="estado_tipo_producto"
+            value={producto.tipo_producto.estado_tipo_producto}
+            onChange={(e) => handleTipoProductoChange(e, index)}
+          />
 
-      <label>Nombre Producto:</label>
-      <input
-        type="text"
-        name="nombre_producto"
-        value={nuevoPedido.producto.nombre_producto}
-        onChange={handleProductoChange}
-      />
+          <label>Nombre Producto:</label>
+          <input
+            type="text"
+            name="nombre_producto"
+            value={producto.nombre_producto}
+            onChange={(e) => handleProductoChange(e, index)}
+          />
 
-      <label>Estado Producto:</label>
-      <input
-        type="text"
-        name="estado_producto"
-        value={nuevoPedido.producto.estado_producto}
-        onChange={handleProductoChange}
-      />
+          <label>Estado Producto:</label>
+          <input
+            type="text"
+            name="estado_producto"
+            value={producto.estado_producto}
+            onChange={(e) => handleProductoChange(e, index)}
+          />
 
-      <label>Cantidad Producto:</label>
-      <input
-        type="number"
-        name="cantidad_producto"
-        value={nuevoPedido.producto.cantidad_producto}
-        onChange={handleProductoChange}
-      />
+          <label>Cantidad Producto:</label>
+          <input
+            type="number"
+            name="cantidad_producto"
+            value={producto.cantidad_producto}
+            onChange={(e) => handleProductoChange(e, index)}
+          />
 
-      <label>Precio Producto:</label>
-      <input
-        type="number"
-        name="precio_producto"
-        value={nuevoPedido.producto.precio_producto}
-        onChange={handleProductoChange}
-      />
+          <label>Precio Producto:</label>
+          <input
+            type="number"
+            name="precio_producto"
+            value={producto.precio_producto}
+            onChange={(e) => handleProductoChange(e, index)}
+          />
 
-      <label>Estado Producto Catálogo:</label>
-      <input
-        type="text"
-        name="estado_producto_catalogo"
-        value={nuevoPedido.producto.estado_producto_catalogo}
-        onChange={handleProductoChange}
-      />
+          <label>Estado Producto Catálogo:</label>
+          <input
+            type="text"
+            name="estado_producto_catalogo"
+            value={producto.estado_producto_catalogo}
+            onChange={(e) => handleProductoChange(e, index)}
+          />
+        </div>
+      ))}
+      <button type="button" onClick={agregarProducto}>
+        Agregar Producto
+      </button>
 
       <h2>Servicios</h2>
-      <label>Tipo Servicio:</label>
-      <input
-        type="text"
-        name="nombre_tipo_servicio"
-        value={nuevoPedido.servicio.tipo_servicio.nombre_tipo_servicio}
-        onChange={handleTipoServicioChange}
-      />
+      {nuevoPedido.servicios.map((servicio, index) => (
+        <div key={index}>
+          <label>Tipo Servicio:</label>
+          <input
+            type="text"
+            name="nombre_tipo_servicio"
+            value={servicio.tipo_servicio.nombre_tipo_servicio}
+            onChange={(e) => handleTipoServicioChange(e, index)}
+          />
 
-      <label>Estado Tipo Servicio:</label>
-      <input
-        type="text"
-        name="estado_tipo_servicio"
-        value={nuevoPedido.servicio.tipo_servicio.estado_tipo_servicio}
-        onChange={handleTipoServicioChange}
-      />
+          <label>Estado Tipo Servicio:</label>
+          <input
+            type="text"
+            name="estado_tipo_servicio"
+            value={servicio.tipo_servicio.estado_tipo_servicio}
+            onChange={(e) => handleTipoServicioChange(e, index)}
+          />
 
-      <label>Nombre Servicio:</label>
-      <input
-        type="text"
-        name="nombre_servicio"
-        value={nuevoPedido.servicio.nombre_servicio}
-        onChange={handleServicioChange}
-      />
+          <label>Nombre Servicio:</label>
+          <input
+            type="text"
+            name="nombre_servicio"
+            value={servicio.nombre_servicio}
+            onChange={(e) => handleServicioChange(e, index)}
+          />
 
-      <label>Estado Servicio:</label>
-      <input
-        type="text"
-        name="estado_servicio"
-        value={nuevoPedido.servicio.estado_servicio}
-        onChange={handleServicioChange}
-      />
+          <label>Estado Servicio:</label>
+          <input
+            type="text"
+            name="estado_servicio"
+            value={servicio.estado_servicio}
+            onChange={(e) => handleServicioChange(e, index)}
+          />
 
-      <label>Cantidad Servicio:</label>
-      <input
-        type="number"
-        name="cantidad_servicio"
-        value={nuevoPedido.servicio.cantidad_servicio}
-        onChange={handleServicioChange}
-      />
+          <label>Cantidad Servicio:</label>
+          <input
+            type="number"
+            name="cantidad_servicio"
+            value={servicio.cantidad_servicio}
+            onChange={(e) => handleServicioChange(e, index)}
+          />
 
-      <label>Precio Servicio:</label>
-      <input
-        type="number"
-        name="precio_servicio"
-        value={nuevoPedido.servicio.precio_servicio}
-        onChange={handleServicioChange}
-      />
+          <label>Precio Servicio:</label>
+          <input
+            type="number"
+            name="precio_servicio"
+            value={servicio.precio_servicio}
+            onChange={(e) => handleServicioChange(e, index)}
+          />
 
-      <label>Estado Servicio Catálogo:</label>
-      <input
-        type="text"
-        name="estado_servicio_catalogo"
-        value={nuevoPedido.servicio.estado_servicio_catalogo}
-        onChange={handleServicioChange}
-      />
+          <label>Estado Servicio Catálogo:</label>
+          <input
+            type="text"
+            name="estado_servicio_catalogo"
+            value={servicio.estado_servicio_catalogo}
+            onChange={(e) => handleServicioChange(e, index)}
+          />
+        </div>
+      ))}
+      <button type="button" onClick={agregarServicio}>
+        Agregar Servicio
+      </button>
 
       <button type="submit">Agregar Pedido</button>
     </form>

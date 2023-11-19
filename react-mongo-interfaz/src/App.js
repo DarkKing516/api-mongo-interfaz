@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import Select from 'react-select';
 import axios from 'axios';
-import NuevoPedidoForm from './NuevoPedidoForm'; // Importa el nuevo componente
+import NuevoPedidoForm from './NuevoPedidoForm';
 import './App.css';
 
 Modal.setAppElement('#root');
@@ -13,7 +13,6 @@ function App() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [nuevoPedidoModalIsOpen, setNuevoPedidoModalIsOpen] = useState(false);
 
-  // Obtener la lista de pedidos al cargar el componente
   useEffect(() => {
     axios.get('http://localhost:3000/pedidos')
       .then(response => {
@@ -24,18 +23,15 @@ function App() {
       });
   }, []);
 
-  // Abrir la modal y seleccionar el pedido al hacer clic en "ver detalle"
   const handleVerDetalle = (pedido) => {
     setSelectedPedido(pedido);
     setModalIsOpen(true);
   };
 
-  // Manejar el cambio de estado en la modal
   const handleEstadoChange = (selectedOption) => {
     setSelectedPedido(prevPedido => ({ ...prevPedido, estado_pedido: selectedOption.value }));
   };
 
-  // Guardar los cambios en la modal
   const handleGuardarCambios = () => {
     setPedidos(prevPedidos =>
       prevPedidos.map(pedido => (pedido._id === selectedPedido._id ? selectedPedido : pedido))
@@ -43,12 +39,10 @@ function App() {
     setModalIsOpen(false);
   };
 
-  // Abrir la modal de nuevo pedido
   const handleNuevoPedidoClick = () => {
     setNuevoPedidoModalIsOpen(true);
   };
 
-  // Agregar un nuevo pedido a la lista
   const handlePedidoAgregado = (nuevoPedido) => {
     setPedidos(prevPedidos => [...prevPedidos, nuevoPedido]);
     setNuevoPedidoModalIsOpen(false);
@@ -58,12 +52,10 @@ function App() {
     <div>
       <h1>Listado de Pedidos</h1>
 
-      {/* Botón para abrir la modal de nuevo pedido */}
       <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
         <button onClick={handleNuevoPedidoClick}>Agregar Nuevo Pedido</button>
       </div>
 
-      {/* Lista de pedidos existentes */}
       <table>
         <thead>
           <tr>
@@ -102,83 +94,80 @@ function App() {
               <p>Fecha Pedido: {selectedPedido.fecha_pedido}</p>
               <p>Total Pedido: {selectedPedido.total_pedido}</p>
             </div>
-            {/* Mostrar detalles del Servicio y Producto en un formato de cuadro */}
-            {(selectedPedido.servicio || selectedPedido.producto) ? (
-              <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-                {/* Detalles del Servicio */}
-                {selectedPedido.servicio && (
-                  <div>
-                    <h3>Detalles del Servicio</h3>
-                    <p>Nombre del Servicio: {selectedPedido.servicio.nombre_servicio}</p>
-                    <p>Estado del Servicio: {selectedPedido.servicio.estado_servicio}</p>
-                    <p>Cantidad del Servicio: {selectedPedido.servicio.cantidad_servicio}</p>
-                    <p>Precio del Servicio: {selectedPedido.servicio.precio_servicio}</p>
-                    <p>Estado del Catálogo del Servicio: {selectedPedido.servicio.estado_servicio_catalogo}</p>
-                    <p>Subtotal del Servicio: {selectedPedido.servicio.subtotal}</p>
-
-                    {/* Mostrar detalles del Tipo de Servicio */}
-                    {selectedPedido.servicio.tipo_servicio && (
-                      <div>
-                        <h4>Detalles del Tipo de Servicio</h4>
-                        <p>Nombre del Tipo de Servicio: {selectedPedido.servicio.tipo_servicio.nombre_tipo_servicio}</p>
-                        <p>Estado del Tipo de Servicio: {selectedPedido.servicio.tipo_servicio.estado_tipo_servicio}</p>
-                        {/* Otros campos del tipo de servicio */}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Detalles del Producto */}
-                {selectedPedido.producto && (
-                  <div>
-                    <h3>Detalles del Producto</h3>
-                    <p>Nombre del Producto: {selectedPedido.producto.nombre_producto}</p>
-                    <p>Estado del Producto: {selectedPedido.producto.estado_producto}</p>
-                    <p>Cantidad del Producto: {selectedPedido.producto.cantidad_producto}</p>
-                    <p>Precio del Producto: {selectedPedido.producto.precio_producto}</p>
-                    <p>Estado del Catálogo del Producto: {selectedPedido.producto.estado_producto_catalogo}</p>
-                    <p>Subtotal del Producto: {selectedPedido.producto.subtotal}</p>
-
-                    {/* Mostrar detalles del Tipo de Producto */}
-                    {selectedPedido.producto.tipo_producto && (
-                      <div>
-                        <h4>Detalles del Tipo de Producto</h4>
-                        <p>Nombre del Tipo de Producto: {selectedPedido.producto.tipo_producto.nombre_tipo_producto}</p>
-                        <p>Estado del Tipo de Producto: {selectedPedido.producto.tipo_producto.estado_tipo_producto}</p>
-                        {/* Otros campos del tipo de producto */}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
+            {(selectedPedido.servicios || selectedPedido.productos) ? (
+             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+             {selectedPedido.servicios && selectedPedido.servicios.length > 0 && (
+               <div>
+                 <h3>Detalles de Servicios</h3>
+                 {selectedPedido.servicios.map((servicio, index) => (
+                   <div key={index}>
+                    <p>---------------------------------------</p>
+                     <p>Nombre del Servicio: {servicio.nombre_servicio}</p>
+                     <p>Estado del Servicio: {servicio.estado_servicio}</p>
+                     <p>Cantidad del Servicio: {servicio.cantidad_servicio}</p>
+                     <p>Precio del Servicio: {servicio.precio_servicio}</p>
+                     <p>Estado del Catálogo del Servicio: {servicio.estado_servicio_catalogo}</p>
+                     <p>Subtotal del Servicio: {servicio.subtotal}</p>
+                     {servicio.tipo_servicio && (
+                       <div>
+                         <h4>Detalles del Tipo de Servicio</h4>
+                         <p>Nombre del Tipo de Servicio: {servicio.tipo_servicio.nombre_tipo_servicio}</p>
+                         <p>Estado del Tipo de Servicio: {servicio.tipo_servicio.estado_tipo_servicio}</p>
+                       </div>
+                     )}
+                   </div>
+                 ))}
+               </div>
+             )}
+           
+             {selectedPedido.productos && selectedPedido.productos.length > 0 && (
+               <div>
+                 <h3>Detalles de Productos</h3>
+                 {selectedPedido.productos.map((producto, index) => (
+                   <div key={index}>
+                    <p>---------------------------------------</p>
+                     <p>Nombre del Producto: {producto.nombre_producto}</p>
+                     <p>Estado del Producto: {producto.estado_producto}</p>
+                     <p>Cantidad del Producto: {producto.cantidad_producto}</p>
+                     <p>Precio del Producto: {producto.precio_producto}</p>
+                     <p>Estado del Catálogo del Producto: {producto.estado_producto_catalogo}</p>
+                     <p>Subtotal del Producto: {producto.subtotal}</p>
+                     {producto.tipo_producto && (
+                       <div>
+                         <h4>Detalles del Tipo de Producto</h4>
+                         <p>Nombre del Tipo de Producto: {producto.tipo_producto.nombre_tipo_producto}</p>
+                         <p>Estado del Tipo de Producto: {producto.tipo_producto.estado_tipo_producto}</p>
+                       </div>
+                     )}
+                   </div>
+                 ))}
+               </div>
+             )}
+           </div>
             ) : (
               <p>No hay detalles de servicio y producto disponibles.</p>
             )}
-
-            <p>Estado Pedido:
+            <div>
+              <label>Estado del Pedido:</label>
               <Select
-                options={[
-                  { value: 'en proceso', label: 'En proceso' },
-                  { value: 'por hacer', label: 'Por Hacer' },
-                  { value: 'hecho', label: 'Hecho' },
-                  { value: 'entregado', label: 'Entregado' },
-                  { value: 'deshabilitado', label: 'Deshabilitado' },
-                ]}
                 value={{ value: selectedPedido.estado_pedido, label: selectedPedido.estado_pedido }}
+                options={[
+                  { value: 'En Proceso', label: 'En Proceso' },
+                  { value: 'Entregado', label: 'Entregado' },
+                  { value: 'Cancelado', label: 'Cancelado' },
+                ]}
                 onChange={handleEstadoChange}
               />
-            </p>
-
+            </div>
             <button onClick={handleGuardarCambios}>Guardar Cambios</button>
           </div>
         )}
       </Modal>
 
-      {/* Modal de nuevo pedido */}
       <Modal
         isOpen={nuevoPedidoModalIsOpen}
         onRequestClose={() => setNuevoPedidoModalIsOpen(false)}
-        contentLabel="Agregar Nuevo Pedido"
+        contentLabel="Nuevo Pedido"
       >
         <NuevoPedidoForm onPedidoAgregado={handlePedidoAgregado} />
       </Modal>

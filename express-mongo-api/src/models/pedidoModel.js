@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 
 const pedidoSchema = new mongoose.Schema({
-  servicio: {
+  servicios: [{
     tipo_servicio: {
       nombre_tipo_servicio: String,
       estado_tipo_servicio: String
@@ -13,8 +13,8 @@ const pedidoSchema = new mongoose.Schema({
     precio_servicio: Number,
     estado_servicio_catalogo: String,
     subtotal: Number
-  },
-  producto: {
+  }],
+  productos: [{
     tipo_producto: {
       nombre_tipo_producto: String,
       estado_tipo_producto: String
@@ -25,7 +25,7 @@ const pedidoSchema = new mongoose.Schema({
     precio_producto: Number,
     estado_producto_catalogo: String,
     subtotal: Number
-  },
+  }],
   fecha_creacion: String,
   fecha_pedido: String,
   total_pedido: Number,

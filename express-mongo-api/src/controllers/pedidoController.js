@@ -13,9 +13,9 @@ const pedidoController = {
   },
 
   createPedido: async (req, res) => {
-    const { servicio, producto, fecha_creacion, fecha_pedido, total_pedido, estado_pedido } = req.body;
+    const { productos, servicios, fecha_creacion, fecha_pedido, total_pedido, estado_pedido } = req.body;
     try {
-      const nuevoPedido = new Pedido({ servicio, producto, fecha_creacion, fecha_pedido, total_pedido, estado_pedido });
+      const nuevoPedido = new Pedido({ productos, servicios, fecha_creacion, fecha_pedido, total_pedido, estado_pedido });
       await nuevoPedido.save();
       res.status(201).json(nuevoPedido);
     } catch (error) {
@@ -23,6 +23,7 @@ const pedidoController = {
       res.status(500).send('Error interno del servidor');
     }
   },
+  
 
   getOnePedido: async (req, res) => {
     const { id } = req.params;
@@ -40,9 +41,9 @@ const pedidoController = {
 
   updatePedido: async (req, res) => {
     const { id } = req.params;
-    const { servicio, producto, fecha_creacion, fecha_pedido, total_pedido, estado_pedido } = req.body;
+    const { productos, servicios, fecha_creacion, fecha_pedido, total_pedido, estado_pedido } = req.body;
     try {
-      const pedido = await Pedido.findByIdAndUpdate(id, { servicio, producto, fecha_creacion, fecha_pedido, total_pedido, estado_pedido }, { new: true });
+      const pedido = await Pedido.findByIdAndUpdate(id, { productos, servicios, fecha_creacion, fecha_pedido, total_pedido, estado_pedido }, { new: true });
       if (!pedido) {
         return res.status(404).send('Pedido no encontrado');
       }
@@ -52,6 +53,7 @@ const pedidoController = {
       res.status(500).send('Error interno del servidor');
     }
   },
+  
 
   deleteOnePedido: async (req, res) => {
     const { id } = req.params;
