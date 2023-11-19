@@ -8,6 +8,9 @@ Este proyecto consta de una API REST construida con Express y MongoDB, junto con
 ```bash
 \express-mongo-api
 ```
+```bash
+cd express-mongo-api
+```
 
 ### Comando de Inicio
 ```bash
@@ -24,6 +27,9 @@ La API REST se ejecutará en el puerto predeterminado 3000. Asegúrate de que no
 ```bash
 \react-mongo-interfaz
 ```
+```bash
+cd react-mongo-interfaz
+```
 
 ### Comando de Inicio
 ```bash
@@ -38,7 +44,7 @@ Esto iniciará la aplicación React en modo de desarrollo. Abre [http://localhos
 
 ### Ruta del Proyecto
 ```bash
-\vite-mongo-interfaz
+cd vite-mongo-interfaz
 ```
 
 ### Comando de Inicio
