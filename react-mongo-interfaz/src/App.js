@@ -15,6 +15,7 @@ function App() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [nuevoPedidoModalIsOpen, setNuevoPedidoModalIsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [filtroEstado, setFiltroEstado] = useState('');
 
   useEffect(() => {
     axios
@@ -52,11 +53,19 @@ function App() {
     setNuevoPedidoModalIsOpen(false);
   };
 
+  const handleFiltroEstadoChange = (selectedOption) => {
+    setFiltroEstado(selectedOption ? selectedOption.value : '');
+    setCurrentPage(1);
+  };
+
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
-  const currentItems = pedidos.slice(indexOfFirstItem, indexOfLastItem);
+  const pedidosFiltrados = filtroEstado
+    ? pedidos.filter((pedido) => pedido.estado_pedido === filtroEstado)
+    : pedidos;
+  const currentItems = pedidosFiltrados.slice(indexOfFirstItem, indexOfLastItem);
 
-  const totalPages = Math.ceil(pedidos.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(pedidosFiltrados.length / ITEMS_PER_PAGE);
 
   return (
     <div>
@@ -64,6 +73,21 @@ function App() {
 
       <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
         <button onClick={handleNuevoPedidoClick}>Agregar Nuevo Pedido</button>
+      </div>
+
+      <div>
+        <label>Filtrar por Estado del Pedido:</label>
+        <Select
+          value={filtroEstado ? { value: filtroEstado, label: filtroEstado } : null}
+          options={[
+            { value: 'por hacer', label: 'Por Hacer' },
+            { value: 'en proceso', label: 'En Proceso' },
+            { value: 'entregado', label: 'Entregado' },
+            { value: 'cancelado', label: 'Cancelado' },
+          ]}
+          onChange={handleFiltroEstadoChange}
+          isClearable
+        />
       </div>
 
       <table>
