@@ -51,21 +51,27 @@ body {
   height: 100vh;
 }
 
-h1 {
+.container {
+  max-width: 800px;
+  width: 80%;
   text-align: center;
-  color: #333;
+  margin: 0 auto;
+}
+
+h1 {
+  color: #007bff;
 }
 
 table {
   border-collapse: collapse;
-  width: 80%;
-  margin: 20px auto; /* Centra la tabla y agrega un espacio en la parte superior */
+  width: 100%;
+  margin-top: 20px;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 th, td {
-  padding: 12px;
+  padding: 15px;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
@@ -82,9 +88,10 @@ tbody tr:hover {
 button {
   background-color: #007bff;
   color: #fff;
-  padding: 8px 12px;
+  padding: 10px 15px;
   border: none;
   cursor: pointer;
+  border-radius: 5px;
 }
 
 button:hover {
@@ -110,4 +117,24 @@ button:hover {
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos para la paginación */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+  margin: 0 5px;
+}
+
+.pagination button:hover {
+  background-color: #0056b3;
 }

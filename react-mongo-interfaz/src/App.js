@@ -39,10 +39,24 @@ function App() {
   };
 
   const handleGuardarCambios = () => {
-    setPedidos((prevPedidos) =>
-      prevPedidos.map((pedido) => (pedido._id === selectedPedido._id ? selectedPedido : pedido))
-    );
-    setModalIsOpen(false);
+    axios
+      .put(`http://localhost:3000/pedidos/${selectedPedido._id}`, {
+        productos: selectedPedido.productos,
+        servicios: selectedPedido.servicios,
+        fecha_creacion: selectedPedido.fecha_creacion,
+        fecha_pedido: selectedPedido.fecha_pedido,
+        total_pedido: selectedPedido.total_pedido,
+        estado_pedido: selectedPedido.estado_pedido,
+      })
+      .then((response) => {
+        setPedidos((prevPedidos) =>
+          prevPedidos.map((pedido) => (pedido._id === selectedPedido._id ? response.data : pedido))
+        );
+        setModalIsOpen(false);
+      })
+      .catch((error) => {
+        console.error('Error al guardar cambios en el servidor:', error);
+      });
   };
 
   const handleNuevoPedidoClick = () => {
@@ -71,37 +85,34 @@ function App() {
   const handleGenerarInforme = () => {
     const pdf = new jsPDF();
     pdf.text('Informe de Pedidos', 20, 10);
-  
-    // Agregar información de los pedidos al informe
+
     let y = 20;
-    const lineHeight = 60; // Altura de cada línea
-  
+    const lineHeight = 60;
+
     pedidosFiltrados.forEach((pedido, index) => {
       if (y + lineHeight > pdf.internal.pageSize.height) {
-        pdf.addPage(); // Agregar nueva página si no hay suficiente espacio
+        pdf.addPage();
         y = 20;
       }
-  
+
       pdf.text(`Pedido #${index + 1}:`, 20, y);
       pdf.text(`Fecha Creación: ${pedido.fecha_creacion}`, 30, y + 10);
       pdf.text(`Fecha Pedido: ${pedido.fecha_pedido}`, 30, y + 20);
       pdf.text(`Total Pedido: ${pedido.total_pedido}`, 30, y + 30);
       pdf.text(`Estado Pedido: ${pedido.estado_pedido}`, 30, y + 40);
       pdf.text('---------------------------------------', 20, y + 50);
-  
+
       y += lineHeight;
     });
-  
-    // Guardar el PDF
+
     pdf.save('InformePedidos.pdf');
   };
-  
-  
-
 
   return (
     <div>
-      <h1>Listado de Pedidos</h1>
+      <center>
+        <h1>Listado de Pedidos</h1>
+      </center>
 
       <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
         <button onClick={handleNuevoPedidoClick}>Agregar Nuevo Pedido</button>
@@ -230,14 +241,17 @@ function App() {
               <Select
                 value={{ value: selectedPedido.estado_pedido, label: selectedPedido.estado_pedido }}
                 options={[
-                  { value: 'En Proceso', label: 'En Proceso' },
-                  { value: 'Entregado', label: 'Entregado' },
-                  { value: 'Cancelado', label: 'Cancelado' },
+                  { value: 'en proceso', label: 'En Proceso' },
+                  { value: 'entregado', label: 'Entregado' },
+                  { value: 'cancelado', label: 'Cancelado' },
                 ]}
                 onChange={handleEstadoChange}
               />
             </div>
-            <button onClick={handleGuardarCambios}>Guardar Cambios</button>
+            <br />
+            <center>
+              <button onClick={handleGuardarCambios}>Guardar Cambios</button>
+            </center>
           </div>
         )}
       </Modal>
