@@ -4,6 +4,7 @@ import Select from 'react-select';
 import axios from 'axios';
 import NuevoPedidoForm from './NuevoPedidoForm';
 import './App.css';
+import jsPDF from 'jspdf';
 
 Modal.setAppElement('#root');
 
@@ -67,6 +68,37 @@ function App() {
 
   const totalPages = Math.ceil(pedidosFiltrados.length / ITEMS_PER_PAGE);
 
+  const handleGenerarInforme = () => {
+    const pdf = new jsPDF();
+    pdf.text('Informe de Pedidos', 20, 10);
+  
+    // Agregar información de los pedidos al informe
+    let y = 20;
+    const lineHeight = 60; // Altura de cada línea
+  
+    pedidosFiltrados.forEach((pedido, index) => {
+      if (y + lineHeight > pdf.internal.pageSize.height) {
+        pdf.addPage(); // Agregar nueva página si no hay suficiente espacio
+        y = 20;
+      }
+  
+      pdf.text(`Pedido #${index + 1}:`, 20, y);
+      pdf.text(`Fecha Creación: ${pedido.fecha_creacion}`, 30, y + 10);
+      pdf.text(`Fecha Pedido: ${pedido.fecha_pedido}`, 30, y + 20);
+      pdf.text(`Total Pedido: ${pedido.total_pedido}`, 30, y + 30);
+      pdf.text(`Estado Pedido: ${pedido.estado_pedido}`, 30, y + 40);
+      pdf.text('---------------------------------------', 20, y + 50);
+  
+      y += lineHeight;
+    });
+  
+    // Guardar el PDF
+    pdf.save('InformePedidos.pdf');
+  };
+  
+  
+
+
   return (
     <div>
       <h1>Listado de Pedidos</h1>
@@ -123,6 +155,10 @@ function App() {
         ))}
       </div>
 
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+        <button onClick={handleGenerarInforme}>Generar Informe</button>
+      </div>
+
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={() => setModalIsOpen(false)}
@@ -137,55 +173,55 @@ function App() {
               <p>Total Pedido: {selectedPedido.total_pedido}</p>
             </div>
             {(selectedPedido.servicios || selectedPedido.productos) ? (
-             <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-             {selectedPedido.servicios && selectedPedido.servicios.length > 0 && (
-               <div>
-                 <h3>Detalles de Servicios</h3>
-                 {selectedPedido.servicios.map((servicio, index) => (
-                   <div key={index}>
-                    <p>---------------------------------------</p>
-                     <p>Nombre del Servicio: {servicio.nombre_servicio}</p>
-                     <p>Estado del Servicio: {servicio.estado_servicio}</p>
-                     <p>Cantidad del Servicio: {servicio.cantidad_servicio}</p>
-                     <p>Precio del Servicio: {servicio.precio_servicio}</p>
-                     <p>Estado del Catálogo del Servicio: {servicio.estado_servicio_catalogo}</p>
-                     <p>Subtotal del Servicio: {servicio.subtotal}</p>
-                     {servicio.tipo_servicio && (
-                       <div>
-                         <h4>Detalles del Tipo de Servicio</h4>
-                         <p>Nombre del Tipo de Servicio: {servicio.tipo_servicio.nombre_tipo_servicio}</p>
-                         <p>Estado del Tipo de Servicio: {servicio.tipo_servicio.estado_tipo_servicio}</p>
-                       </div>
-                     )}
-                   </div>
-                 ))}
-               </div>
-             )}
-           
-             {selectedPedido.productos && selectedPedido.productos.length > 0 && (
-               <div>
-                 <h3>Detalles de Productos</h3>
-                 {selectedPedido.productos.map((producto, index) => (
-                   <div key={index}>
-                    <p>---------------------------------------</p>
-                     <p>Nombre del Producto: {producto.nombre_producto}</p>
-                     <p>Estado del Producto: {producto.estado_producto}</p>
-                     <p>Cantidad del Producto: {producto.cantidad_producto}</p>
-                     <p>Precio del Producto: {producto.precio_producto}</p>
-                     <p>Estado del Catálogo del Producto: {producto.estado_producto_catalogo}</p>
-                     <p>Subtotal del Producto: {producto.subtotal}</p>
-                     {producto.tipo_producto && (
-                       <div>
-                         <h4>Detalles del Tipo de Producto</h4>
-                         <p>Nombre del Tipo de Producto: {producto.tipo_producto.nombre_tipo_producto}</p>
-                         <p>Estado del Tipo de Producto: {producto.tipo_producto.estado_tipo_producto}</p>
-                       </div>
-                     )}
-                   </div>
-                 ))}
-               </div>
-             )}
-           </div>
+              <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                {selectedPedido.servicios && selectedPedido.servicios.length > 0 && (
+                  <div>
+                    <h3>Detalles de Servicios</h3>
+                    {selectedPedido.servicios.map((servicio, index) => (
+                      <div key={index}>
+                        <p>---------------------------------------</p>
+                        <p>Nombre del Servicio: {servicio.nombre_servicio}</p>
+                        <p>Estado del Servicio: {servicio.estado_servicio}</p>
+                        <p>Cantidad del Servicio: {servicio.cantidad_servicio}</p>
+                        <p>Precio del Servicio: {servicio.precio_servicio}</p>
+                        <p>Estado del Catálogo del Servicio: {servicio.estado_servicio_catalogo}</p>
+                        <p>Subtotal del Servicio: {servicio.subtotal}</p>
+                        {servicio.tipo_servicio && (
+                          <div>
+                            <h4>Detalles del Tipo de Servicio</h4>
+                            <p>Nombre del Tipo de Servicio: {servicio.tipo_servicio.nombre_tipo_servicio}</p>
+                            <p>Estado del Tipo de Servicio: {servicio.tipo_servicio.estado_tipo_servicio}</p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {selectedPedido.productos && selectedPedido.productos.length > 0 && (
+                  <div>
+                    <h3>Detalles de Productos</h3>
+                    {selectedPedido.productos.map((producto, index) => (
+                      <div key={index}>
+                        <p>---------------------------------------</p>
+                        <p>Nombre del Producto: {producto.nombre_producto}</p>
+                        <p>Estado del Producto: {producto.estado_producto}</p>
+                        <p>Cantidad del Producto: {producto.cantidad_producto}</p>
+                        <p>Precio del Producto: {producto.precio_producto}</p>
+                        <p>Estado del Catálogo del Producto: {producto.estado_producto_catalogo}</p>
+                        <p>Subtotal del Producto: {producto.subtotal}</p>
+                        {producto.tipo_producto && (
+                          <div>
+                            <h4>Detalles del Tipo de Producto</h4>
+                            <p>Nombre del Tipo de Producto: {producto.tipo_producto.nombre_tipo_producto}</p>
+                            <p>Estado del Tipo de Producto: {producto.tipo_producto.estado_tipo_producto}</p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             ) : (
               <p>No hay detalles de servicio y producto disponibles.</p>
             )}
