@@ -7,18 +7,22 @@ import './App.css';
 
 Modal.setAppElement('#root');
 
+const ITEMS_PER_PAGE = 6;
+
 function App() {
   const [pedidos, setPedidos] = useState([]);
   const [selectedPedido, setSelectedPedido] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [nuevoPedidoModalIsOpen, setNuevoPedidoModalIsOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/pedidos')
-      .then(response => {
+    axios
+      .get('http://localhost:3000/pedidos')
+      .then((response) => {
         setPedidos(response.data);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Error al obtener la lista de pedidos:', error);
       });
   }, []);
@@ -29,12 +33,12 @@ function App() {
   };
 
   const handleEstadoChange = (selectedOption) => {
-    setSelectedPedido(prevPedido => ({ ...prevPedido, estado_pedido: selectedOption.value }));
+    setSelectedPedido((prevPedido) => ({ ...prevPedido, estado_pedido: selectedOption.value }));
   };
 
   const handleGuardarCambios = () => {
-    setPedidos(prevPedidos =>
-      prevPedidos.map(pedido => (pedido._id === selectedPedido._id ? selectedPedido : pedido))
+    setPedidos((prevPedidos) =>
+      prevPedidos.map((pedido) => (pedido._id === selectedPedido._id ? selectedPedido : pedido))
     );
     setModalIsOpen(false);
   };
@@ -44,9 +48,15 @@ function App() {
   };
 
   const handlePedidoAgregado = (nuevoPedido) => {
-    setPedidos(prevPedidos => [...prevPedidos, nuevoPedido]);
+    setPedidos((prevPedidos) => [...prevPedidos, nuevoPedido]);
     setNuevoPedidoModalIsOpen(false);
   };
+
+  const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
+  const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
+  const currentItems = pedidos.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(pedidos.length / ITEMS_PER_PAGE);
 
   return (
     <div>
@@ -67,7 +77,7 @@ function App() {
           </tr>
         </thead>
         <tbody>
-          {pedidos.map(pedido => (
+          {currentItems.map((pedido) => (
             <tr key={pedido._id}>
               <td>{pedido.fecha_creacion}</td>
               <td>{pedido.fecha_pedido}</td>
@@ -80,6 +90,14 @@ function App() {
           ))}
         </tbody>
       </table>
+
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+          <button key={page} onClick={() => setCurrentPage(page)}>
+            {page}
+          </button>
+        ))}
+      </div>
 
       <Modal
         isOpen={modalIsOpen}
