@@ -40,7 +40,7 @@ Esto iniciará la aplicación React en modo de desarrollo. Abre [http://localhos
 
 **Nota:** La interfaz se ejecuta en [http://localhost:3001](http://localhost:3001), mientras que la API se ejecuta en [http://localhost:3000](http://localhost:3000). Además, puedes ver los registros desde la API en [http://localhost:3000/pedidos](http://localhost:3000/pedidos).
 
-## Iniciar la Aplicación Vite (Opcional)
+## Iniciar la Aplicación Vite (Opcional - Aún no terminada debido a que no era un requerimiento hacerlo en Vite)
 
 ### Ruta del Proyecto
 ```bash
