@@ -44,6 +44,9 @@ Esto iniciará la aplicación React en modo de desarrollo. Abre [http://localhos
 
 ### Ruta del Proyecto
 ```bash
+\vite-mongo-interfaz
+```
+```bash
 cd vite-mongo-interfaz
 ```
 
