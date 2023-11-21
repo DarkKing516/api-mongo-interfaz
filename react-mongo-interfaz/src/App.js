@@ -5,6 +5,7 @@ import axios from 'axios';
 import NuevoPedidoForm from './NuevoPedidoForm';
 import './App.css';
 import jsPDF from 'jspdf';
+import Swal from 'sweetalert2';
 
 Modal.setAppElement('#root');
 
@@ -17,6 +18,8 @@ function App() {
   const [nuevoPedidoModalIsOpen, setNuevoPedidoModalIsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [filtroEstado, setFiltroEstado] = useState('');
+  const [filtroFecha, setFiltroFecha] = useState('');
+
 
   useEffect(() => {
     axios
@@ -33,6 +36,21 @@ function App() {
     setSelectedPedido(pedido);
     setModalIsOpen(true);
   };
+
+  const handleEliminarPedido = async (id_pedido) => {
+    try {
+      const response = await axios.delete(`http://localhost:3000/pedidos/${id_pedido}`);
+      if (response) {
+        Swal.fire('Success', 'Pedido Eliminado', 'success');
+        setPedidos((prevPedidos) => prevPedidos.filter((pedido) => pedido._id !== id_pedido));
+        return;
+      }
+    } catch (error) {
+      console.error('Error al Eliminar pedido:', error);
+      Swal.fire('Error', 'Error al eliminar el pedido', 'error');
+    }
+  };
+  
 
   const handleEstadoChange = (selectedOption) => {
     setSelectedPedido((prevPedido) => ({ ...prevPedido, estado_pedido: selectedOption.value }));
@@ -73,11 +91,17 @@ function App() {
     setCurrentPage(1);
   };
 
+  const handleFiltroFechaChange = (e) => {
+    setFiltroFecha(e.target.value);
+    // setCurrentPage(1);
+  };
+
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
-  const pedidosFiltrados = filtroEstado
-    ? pedidos.filter((pedido) => pedido.estado_pedido === filtroEstado)
-    : pedidos;
+  const pedidosFiltrados = pedidos
+    .filter((pedido) => (filtroEstado ? pedido.estado_pedido === filtroEstado : true))
+    .filter((pedido) => (filtroFecha ? pedido.fecha_creacion.includes(filtroFecha) : true) || (filtroFecha ? pedido.fecha_pedido.includes(filtroFecha) : true));
+
   const currentItems = pedidosFiltrados.slice(indexOfFirstItem, indexOfLastItem);
 
   const totalPages = Math.ceil(pedidosFiltrados.length / ITEMS_PER_PAGE);
@@ -118,6 +142,18 @@ function App() {
         <button onClick={handleNuevoPedidoClick}>Agregar Nuevo Pedido</button>
       </div>
 
+      <br />
+      <div>
+        <label>Filtrar por Fecha:</label>
+        <input
+          type="text"
+          name="fecha_creacion"
+          placeholder='mm/dd/aaaa'
+          value={filtroFecha}
+          onChange={handleFiltroFechaChange}
+        />
+      </div>
+      <br />
       <div>
         <label>Filtrar por Estado del Pedido:</label>
         <Select
@@ -152,6 +188,7 @@ function App() {
               <td>{pedido.estado_pedido}</td>
               <td>
                 <button onClick={() => handleVerDetalle(pedido)}>Ver Detalle</button>
+                <button onClick={() => handleEliminarPedido(pedido._id)}>Eliminar</button>
               </td>
             </tr>
           ))}

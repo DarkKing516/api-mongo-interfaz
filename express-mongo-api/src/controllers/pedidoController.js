@@ -68,7 +68,6 @@ const pedidoController = {
       res.status(500).send('Error interno del servidor');
     }
   }
-  // Puedes añadir más funciones según tus necesidades
 };
 
 module.exports = pedidoController;

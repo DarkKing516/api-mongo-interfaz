@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import Select from 'react-select';
 
 const NuevoPedidoForm = ({ onPedidoAgregado }) => {
     const [nuevoPedido, setNuevoPedido] = useState({
@@ -57,6 +58,20 @@ const NuevoPedidoForm = ({ onPedidoAgregado }) => {
         }));
     };
 
+    // const handleProductoChange = (e, index) => {
+    //     const { name, value } = e.target;
+    //     setNuevoPedido((prevPedido) => {
+    //         const nuevosProductos = [...prevPedido.productos];
+    //         nuevosProductos[index] = {
+    //             ...nuevosProductos[index],
+    //             [name]: value,
+    //         };
+    //         return {
+    //             ...prevPedido,
+    //             productos: nuevosProductos,
+    //         };
+    //     });
+    // };
     const handleProductoChange = (e, index) => {
         const { name, value } = e.target;
         setNuevoPedido((prevPedido) => {
@@ -87,15 +102,32 @@ const NuevoPedidoForm = ({ onPedidoAgregado }) => {
         });
     };
 
-    const handleTipoProductoChange = (e, index) => {
-        const { name, value } = e.target;
+    // const handleTipoProductoChange = (e, index) => {
+    //     const { name, value } = e.target;
+    //     setNuevoPedido((prevPedido) => {
+    //         const nuevosProductos = [...prevPedido.productos];
+    //         nuevosProductos[index] = {
+    //             ...nuevosProductos[index],
+    //             tipo_producto: {
+    //                 ...nuevosProductos[index].tipo_producto,
+    //                 [name]: value,
+    //             },
+    //         };
+    //         return {
+    //             ...prevPedido,
+    //             productos: nuevosProductos,
+    //         };
+    //     });
+    // };
+
+    const handleTipoProductoChange = (selectedOption, index) => {
         setNuevoPedido((prevPedido) => {
             const nuevosProductos = [...prevPedido.productos];
             nuevosProductos[index] = {
                 ...nuevosProductos[index],
                 tipo_producto: {
                     ...nuevosProductos[index].tipo_producto,
-                    [name]: value,
+                    estado_tipo_producto: selectedOption.value, // Guardar el valor seleccionado
                 },
             };
             return {
@@ -300,11 +332,20 @@ const NuevoPedidoForm = ({ onPedidoAgregado }) => {
                     />
 
                     <label>Estado Tipo Producto:</label>
-                    <input
+                    {/* <input
                         type="text"
                         name="estado_tipo_producto"
                         value={producto.tipo_producto.estado_tipo_producto}
                         onChange={(e) => handleTipoProductoChange(e, index)}
+                    /> */}
+
+                    <Select
+                        name="estado_tipo_producto"
+                        options={[
+                            { value: 'activo', label: 'Activo' },
+                            { value: 'inactivo', label: 'Inactivo' },
+                        ]}
+                        onChange={(selectedOption) => handleTipoProductoChange(selectedOption, index)}
                     />
 
                     <label>Nombre Producto:</label>
@@ -322,6 +363,15 @@ const NuevoPedidoForm = ({ onPedidoAgregado }) => {
                         value={producto.estado_producto}
                         onChange={(e) => handleProductoChange(e, index)}
                     />
+
+                    {/* <Select
+                        name="estado_producto"
+                        options={[
+                            { value: 'activo', label: 'Activo' },
+                            { value: 'inactivo', label: 'Inactivo' },
+                        ]}
+                        onChange={(selectedOption) => handleTipoProductoChange(selectedOption, index)}
+                    /> */}
 
                     <label>Cantidad Producto:</label>
                     <input
