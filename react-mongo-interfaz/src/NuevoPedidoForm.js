@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const NuevoPedidoForm = ({ onPedidoAgregado }) => {
     const [nuevoPedido, setNuevoPedido] = useState({
@@ -192,6 +193,17 @@ const NuevoPedidoForm = ({ onPedidoAgregado }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            if (!nuevoPedido.fecha_creacion || !nuevoPedido.fecha_pedido) {
+                Swal.fire('Error', 'Las fechas son obligatorias', 'error');
+                return;
+            }
+
+            if (nuevoPedido.productos.length === 0 && nuevoPedido.servicios.length === 0) {
+                Swal.fire('Error', 'Debe agregar al menos un producto o servicio', 'error');
+                return;
+            }
+
+            calcularTotalPedido();
             const response = await axios.post('http://localhost:3000/pedidos', nuevoPedido);
             onPedidoAgregado(response.data);
             setNuevoPedido({
@@ -228,8 +240,10 @@ const NuevoPedidoForm = ({ onPedidoAgregado }) => {
                     },
                 ],
             });
+            Swal.fire('Éxito', 'Pedido agregado correctamente', 'success');
         } catch (error) {
             console.error('Error al agregar un nuevo pedido:', error);
+            Swal.fire('Error', 'Hubo un problema al agregar el pedido', 'error');
         }
     };
 
@@ -272,7 +286,11 @@ const NuevoPedidoForm = ({ onPedidoAgregado }) => {
 
             <h2>Productos</h2>
             {nuevoPedido.productos.map((producto, index) => (
-                <div key={index}>
+                <div key={index}
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                    }}>
                     <label>Tipo Producto:</label>
                     <input
                         type="text"
@@ -330,13 +348,17 @@ const NuevoPedidoForm = ({ onPedidoAgregado }) => {
                     />
                 </div>
             ))}
+            <br />
             <button type="button" onClick={agregarProducto}>
                 Agregar Producto
             </button>
 
             <h2>Servicios</h2>
             {nuevoPedido.servicios.map((servicio, index) => (
-                <div key={index}>
+                <div key={index} style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                }}>
                     <label>Tipo Servicio:</label>
                     <input
                         type="text"
@@ -394,6 +416,7 @@ const NuevoPedidoForm = ({ onPedidoAgregado }) => {
                     />
                 </div>
             ))}
+            <br />
             <button type="button" onClick={agregarServicio}>
                 Agregar Servicio
             </button>
