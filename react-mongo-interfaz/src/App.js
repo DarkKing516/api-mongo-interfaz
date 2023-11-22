@@ -50,7 +50,7 @@ function App() {
       Swal.fire('Error', 'Error al eliminar el pedido', 'error');
     }
   };
-  
+
 
   const handleEstadoChange = (selectedOption) => {
     setSelectedPedido((prevPedido) => ({ ...prevPedido, estado_pedido: selectedOption.value }));
@@ -108,29 +108,42 @@ function App() {
 
   const handleGenerarInforme = () => {
     const pdf = new jsPDF();
-    pdf.text('Informe de Pedidos', 20, 10);
+    const currentDate = new Date().toLocaleDateString();
+    const footer = 'Cra 58 # 69 - 22 piso 11';
 
-    let y = 20;
-    const lineHeight = 60;
+    pdf.text('Informe de Pedidos De Erikas HomeMade', 20, 10);
+    pdf.text(`Informe del día: ${currentDate}`, 20, 20);
+
+    let y = 35;
+    const lineHeight = 70;
 
     pedidosFiltrados.forEach((pedido, index) => {
       if (y + lineHeight > pdf.internal.pageSize.height) {
         pdf.addPage();
-        y = 20;
+        y = 25;
       }
 
-      pdf.text(`Pedido #${index + 1}:`, 20, y);
+      pdf.text(`Pedido #${index + 1}:`, 30, y);
       pdf.text(`Fecha Creación: ${pedido.fecha_creacion}`, 30, y + 10);
       pdf.text(`Fecha Pedido: ${pedido.fecha_pedido}`, 30, y + 20);
       pdf.text(`Total Pedido: ${pedido.total_pedido}`, 30, y + 30);
       pdf.text(`Estado Pedido: ${pedido.estado_pedido}`, 30, y + 40);
-      pdf.text('---------------------------------------', 20, y + 50);
+      pdf.text(`Nombre Usuario: ${pedido.nombre_usuario}`, 30, y + 50);
+      pdf.text('---------------------------------------', 30, y + 60);
 
       y += lineHeight;
     });
 
+    const pageCount = pdf.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      pdf.setPage(i);
+
+      pdf.text(`${footer}, Página: ${i}`, 20, pdf.internal.pageSize.height - 10);
+    }
+
     pdf.save('InformePedidos.pdf');
   };
+
 
   return (
     <div>
@@ -176,6 +189,7 @@ function App() {
             <th>Fecha Pedido</th>
             <th>Total Pedido</th>
             <th>Estado Pedido</th>
+            <th>Nombre Usuario</th>
             <th>Acción</th>
           </tr>
         </thead>
@@ -186,6 +200,7 @@ function App() {
               <td>{pedido.fecha_pedido}</td>
               <td>{pedido.total_pedido}</td>
               <td>{pedido.estado_pedido}</td>
+              <td>{pedido.nombre_usuario}</td>
               <td>
                 <button onClick={() => handleVerDetalle(pedido)}>Ver Detalle</button>
                 <button onClick={() => handleEliminarPedido(pedido._id)}>Eliminar</button>
@@ -216,6 +231,7 @@ function App() {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
               <h2>Detalles del Pedido</h2>
+              <p>Nombre Usuario: {selectedPedido.nombre_usuario}</p>
               <p>Fecha Creación: {selectedPedido.fecha_creacion}</p>
               <p>Fecha Pedido: {selectedPedido.fecha_pedido}</p>
               <p>Total Pedido: {selectedPedido.total_pedido}</p>

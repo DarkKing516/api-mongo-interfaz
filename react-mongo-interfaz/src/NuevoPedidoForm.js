@@ -9,6 +9,7 @@ const NuevoPedidoForm = ({ onPedidoAgregado }) => {
         fecha_pedido: '',
         total_pedido: 0,
         estado_pedido: 'por hacer',
+        nombre_usuario: '',
         productos: [
             {
                 tipo_producto: {
@@ -243,6 +244,7 @@ const NuevoPedidoForm = ({ onPedidoAgregado }) => {
                 fecha_pedido: '',
                 total_pedido: 0,
                 estado_pedido: 'por hacer',
+                nombre_usuario: '',
                 productos: [
                     {
                         tipo_producto: {
@@ -290,6 +292,14 @@ const NuevoPedidoForm = ({ onPedidoAgregado }) => {
             }}
             onSubmit={handleSubmit}
         >
+            <label>Nombre Usuario:</label>
+            <input
+                type="text"
+                name="nombre_usuario"
+                value={nuevoPedido.nombre_usuario}
+                onChange={handleInputChange}
+            />
+
             <label>Fecha de Creación:</label>
             <input
                 type="date"

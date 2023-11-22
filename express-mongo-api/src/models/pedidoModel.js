@@ -29,7 +29,8 @@ const pedidoSchema = new mongoose.Schema({
   fecha_creacion: String,
   fecha_pedido: String,
   total_pedido: Number,
-  estado_pedido: String
+  estado_pedido: String,
+  nombre_usuario: String
 }, { versionKey: false });
 
 const Pedido = mongoose.model('Pedido', pedidoSchema, 'gestion_pedidos');

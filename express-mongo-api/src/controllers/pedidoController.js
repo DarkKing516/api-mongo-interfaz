@@ -13,9 +13,9 @@ const pedidoController = {
   },
 
   createPedido: async (req, res) => {
-    const { productos, servicios, fecha_creacion, fecha_pedido, total_pedido, estado_pedido } = req.body;
+    const { productos, servicios, fecha_creacion, fecha_pedido, total_pedido, estado_pedido, nombre_usuario } = req.body;
     try {
-      const nuevoPedido = new Pedido({ productos, servicios, fecha_creacion, fecha_pedido, total_pedido, estado_pedido });
+      const nuevoPedido = new Pedido({ productos, servicios, fecha_creacion, fecha_pedido, total_pedido, estado_pedido, nombre_usuario });
       await nuevoPedido.save();
       res.status(201).json(nuevoPedido);
     } catch (error) {
@@ -41,9 +41,9 @@ const pedidoController = {
 
   updatePedido: async (req, res) => {
     const { id } = req.params;
-    const { productos, servicios, fecha_creacion, fecha_pedido, total_pedido, estado_pedido } = req.body;
+    const { productos, servicios, fecha_creacion, fecha_pedido, total_pedido, estado_pedido, nombre_usuario } = req.body;
     try {
-      const pedido = await Pedido.findByIdAndUpdate(id, { productos, servicios, fecha_creacion, fecha_pedido, total_pedido, estado_pedido }, { new: true });
+      const pedido = await Pedido.findByIdAndUpdate(id, { productos, servicios, fecha_creacion, fecha_pedido, total_pedido, estado_pedido, nombre_usuario }, { new: true });
       if (!pedido) {
         return res.status(404).send('Pedido no encontrado');
       }
